@@ -23,6 +23,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.0" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.5" />
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -31,6 +32,8 @@
     <None Remove="Interfaces\" />
     <None Remove="Repository\" />
     <None Remove="Controllers\" />
+    <None Remove="Data\Dto\" />
+    <None Remove="Helper\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
@@ -38,5 +41,7 @@
     <Folder Include="Interfaces\" />
     <Folder Include="Repository\" />
     <Folder Include="Controllers\" />
+    <Folder Include="Data\Dto\" />
+    <Folder Include="Helper\" />
   </ItemGroup>
 </Project>

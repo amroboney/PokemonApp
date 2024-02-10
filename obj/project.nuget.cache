@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "kIhbWF8bSIyca/JNTXX+xUVMvve6usjBQ6/N+jH575EIKM/IGQ1449LFY8znrjJan7sjxh5Al44jGNoipCyggw==",
+  "dgSpecHash": "Uz90EhNXOdxKzwz3MDQHrpLsvIO6ETKMWSP9j8u1tF1KXhyTzAaG46LVUydGtFgB9GxO4XblQ0R62o5bwnnRig==",
   "success": true,
   "projectFilePath": "/Users/amroboney/C#/PokemonApp/PokemonApp/PokemonApp.csproj",
   "expectedPackageFiles": [
+    "/Users/amroboney/.nuget/packages/automapper/13.0.1/automapper.13.0.1.nupkg.sha512",
     "/Users/amroboney/.nuget/packages/azure.core/1.35.0/azure.core.1.35.0.nupkg.sha512",
     "/Users/amroboney/.nuget/packages/azure.identity/1.10.3/azure.identity.1.10.3.nupkg.sha512",
     "/Users/amroboney/.nuget/packages/humanizer.core/2.14.1/humanizer.core.2.14.1.nupkg.sha512",
