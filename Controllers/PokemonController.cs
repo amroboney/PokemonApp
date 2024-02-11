@@ -9,7 +9,6 @@ namespace PokemonApp.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
-
 	public class PokemonController : Controller
 	{
 		private readonly IPokemonRepositoroy _pokemonRepository;
@@ -21,6 +20,7 @@ namespace PokemonApp.Controllers
 			_mapper = mapper;
 		}
 
+		// Get all pokemon
 		[HttpGet]
 		[ProducesResponseType(200, Type = typeof(IEnumerable<Pokemon>))]
 		public IActionResult GetPokemons()
@@ -66,6 +66,7 @@ namespace PokemonApp.Controllers
 
             return Ok(rating);
         }
+
     }
 }
 

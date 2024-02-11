@@ -11,7 +11,7 @@ builder.Services.AddControllers();
 builder.Services.AddTransient<Seed>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IPokemonRepositoroy, PokemonRepository>();
-
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
