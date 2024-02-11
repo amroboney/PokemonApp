@@ -59,7 +59,7 @@ namespace PokemonApp.Controllers
 
 			if (!ModelState.IsValid)
 				return BadRequest();
-
+			 
 
 			return Ok(country);
         }
