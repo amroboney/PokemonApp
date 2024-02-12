@@ -1,5 +1,7 @@
 ﻿using System;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using PokemonApp.Data.Dto;
 using PokemonApp.Interfaces;
 using PokemonApp.Models;
 using PokemonApp.Repository;
@@ -12,11 +14,13 @@ namespace PokemonApp.Controllers
 	public class ReviwerController: Controller
 	{
 		private readonly IReviewerRepository _reviewerRepository;
+        private readonly IMapper _mapper;
 
-		public ReviwerController(IReviewerRepository reviewerRepository)
+        public ReviwerController(IReviewerRepository reviewerRepository, IMapper mapper)
 		{
 			_reviewerRepository = reviewerRepository;
-		}
+            _mapper = mapper;
+        }
 
 
         //Get Reviwers
@@ -63,6 +67,39 @@ namespace PokemonApp.Controllers
 
 
             return Ok(reviews);
+        }
+
+        //  Save Reviewer
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult CreateReviewer([FromBody] ReviewerDto reviewerCreate)
+        {
+            if (reviewerCreate == null)
+                return BadRequest(ModelState);
+
+            var reviewer = _reviewerRepository.GetReviewers()
+                .Where(c => c.LastName.Trim().ToUpper() == reviewerCreate.LastName.Trim().ToUpper())
+                .FirstOrDefault();
+
+            if (reviewer != null)
+            {
+                ModelState.AddModelError("", "reviewer allready exists");
+                return StatusCode(422, ModelState);
+            }
+
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var reviewerMap = _mapper.Map<Reviewer>(reviewerCreate);
+
+            if (!_reviewerRepository.CreateReviewer(reviewerMap))
+            {
+                ModelState.AddModelError("", "somthing went rong on save country");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("successflu saved Reviewer");
         }
     }
 }

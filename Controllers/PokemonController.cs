@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using PokemonApp.Data.Dto;
 using PokemonApp.Interfaces;
 using PokemonApp.Models;
+using PokemonApp.Repository;
 
 namespace PokemonApp.Controllers
 {
@@ -65,6 +66,42 @@ namespace PokemonApp.Controllers
                 return BadRequest(ModelState);
 
             return Ok(rating);
+        }
+
+
+
+        //  Save Pokemon
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult CreatePokemon([FromQuery] int categoryId, [FromQuery] int ownerId, [FromBody] PokemonDto pokemonCreate)
+        {
+
+            if (pokemonCreate == null)
+                return BadRequest(ModelState);
+
+            var owner = _pokemonRepository.GetPokemons()
+                .Where(c => c.Name.Trim().ToUpper() == pokemonCreate.Name.Trim().ToUpper())
+                .FirstOrDefault();
+
+            if (owner != null)
+            {
+                ModelState.AddModelError("", "Pokemon allready exists");
+                return StatusCode(422, ModelState);
+            }
+
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var pokemonMap = _mapper.Map<Pokemon>(pokemonCreate);
+
+            if (!_pokemonRepository.CreatePokemon(ownerId, categoryId, pokemonMap))
+            {
+                ModelState.AddModelError("", "somthing went rong on save country");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("successflu saved Owners");
         }
 
     }

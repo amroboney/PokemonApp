@@ -1,5 +1,7 @@
 ﻿using System;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using PokemonApp.Data.Dto;
 using PokemonApp.Interfaces;
 using PokemonApp.Models;
 using PokemonApp.Repository;
@@ -12,10 +14,13 @@ namespace PokemonApp.Controllers
 	public class OwnerController: Controller
 	{
 		private readonly IOwnerRepository _ownerRepository;
-
-		public OwnerController(IOwnerRepository ownerRepository)
+        private readonly ICountryRepository _countryRepository;
+        private readonly IMapper _mapper;
+		public OwnerController(IOwnerRepository ownerRepository, ICountryRepository countryRepository, IMapper mapper)
 		{
 			_ownerRepository = ownerRepository;
+            _countryRepository = countryRepository;
+            _mapper = mapper;
 		}
 
         //Get Owner
@@ -81,6 +86,43 @@ namespace PokemonApp.Controllers
 
 
             return Ok(country);
+        }
+
+
+        //  Save Owner
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult CreateOwener([FromQuery] int countryId, [FromBody] OwnerDto ownerCreate)
+        {
+
+            if (ownerCreate == null)
+                return BadRequest(ModelState);
+
+            var owner = _ownerRepository.GetOwners()
+                .Where(c => c.LastName.Trim().ToUpper() == ownerCreate.LastName.Trim().ToUpper())
+                .FirstOrDefault();
+
+            if (owner != null)
+            {
+                ModelState.AddModelError("", "Owner allready exists");
+                return StatusCode(422, ModelState);
+            }
+
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var ownerMap = _mapper.Map<Owner>(ownerCreate);
+
+            ownerMap.Country = _countryRepository.GetCountry(countryId);
+
+            if (!_ownerRepository.createOwner(ownerMap))
+            {
+                ModelState.AddModelError("", "somthing went rong on save country");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("successflu saved Owners");
         }
     }
 }

@@ -15,6 +15,12 @@ namespace PokemonApp.Repository
             _context = context;
 		}
 
+        public bool createOwner(Owner owner)
+        {
+            _context.Add(owner);
+            return Save();
+        }
+
         public Owner GetOwner(int id)
         {
             return _context.Owners.Where(o => o.Id == id).FirstOrDefault();
@@ -39,6 +45,12 @@ namespace PokemonApp.Repository
         public bool OwnerExists(int id)
         {
             return _context.Owners.Any(o => o.Id == id);
+        }
+
+        public bool Save()
+        {
+            var IsSave = _context.SaveChanges();
+            return IsSave > 0 ? true : false;
         }
     }
 }

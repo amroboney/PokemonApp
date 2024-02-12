@@ -15,6 +15,7 @@ namespace PokemonApp.Controllers
 	{
 		private readonly ICountryRepository _countryRepository;
 		private readonly IMapper _mapper;
+
 		public CountryController(ICountryRepository countryRepository, IMapper mapper)
 		{
 			_countryRepository = countryRepository;
@@ -27,7 +28,7 @@ namespace PokemonApp.Controllers
 		[ProducesResponseType(200, Type = typeof(IEnumerable<Country>))]
 		public IActionResult GetCountries()
 		{
-			var countries = _countryRepository.GetCountries();
+			var countries = _mapper.Map<List<CountryDto>>(_countryRepository.GetCountries());
 
 			if (!ModelState.IsValid)
 				return BadRequest();
