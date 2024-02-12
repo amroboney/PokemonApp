@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Diagnostics.Metrics;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using PokemonApp.Data.Dto;
 using PokemonApp.Interfaces;
 using PokemonApp.Models;
 
@@ -12,10 +14,11 @@ namespace PokemonApp.Controllers
 	public class CountryController : Controller
 	{
 		private readonly ICountryRepository _countryRepository;
-
-		public CountryController(ICountryRepository countryRepository)
+		private readonly IMapper _mapper;
+		public CountryController(ICountryRepository countryRepository, IMapper mapper)
 		{
 			_countryRepository = countryRepository;
+			_mapper = mapper;
 		}
 
 
@@ -63,6 +66,41 @@ namespace PokemonApp.Controllers
 
 			return Ok(country);
         }
+
+
+		//  Save countyr
+		[HttpPost]
+		[ProducesResponseType(204)]
+		[ProducesResponseType(400)]
+		public IActionResult CreateCountry([FromBody] CountryDto countryCreate)
+		{
+			if (countryCreate == null)
+				return BadRequest(ModelState);
+
+			var country = _countryRepository.GetCountries()
+				.Where(c => c.Name.Trim().ToUpper() == countryCreate.Name.Trim().ToUpper())
+				.FirstOrDefault();
+
+			if(country != null )
+			{
+				ModelState.AddModelError("", "Country allready exists");
+				return StatusCode(422, ModelState);
+			}
+
+			if (!ModelState.IsValid)
+				return BadRequest();
+
+			var countryMap = _mapper.Map<Country>(countryCreate);
+
+			if (!_countryRepository.CreateCountry(countryMap))
+			{
+				ModelState.AddModelError("", "somthing went rong on save country");
+				return StatusCode(500, ModelState);
+			}
+
+			return Ok("successflu saved country");
+		}
+		
 
     }
 }

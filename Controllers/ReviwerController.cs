@@ -50,7 +50,7 @@ namespace PokemonApp.Controllers
         }
 
         // Get Reviewer of the review
-        [HttpGet("pokemon/{pokeId}")]
+        [HttpGet("{pokeId}/review")]
         [ProducesResponseType(200, Type = typeof(Review))]
         [ProducesResponseType(400)]
         public IActionResult GetReviewByReviewer(int reviewId)

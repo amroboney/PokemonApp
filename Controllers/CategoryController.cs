@@ -1,5 +1,7 @@
 ﻿using System;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using PokemonApp.Data.Dto;
 using PokemonApp.Interfaces;
 using PokemonApp.Models;
 
@@ -11,10 +13,11 @@ namespace PokemonApp.Controllers
 	public class CategoryController :Controller
 	{
 		private readonly ICategoryRepository _categoryRepository;
-
-		public CategoryController(ICategoryRepository categoryRepository)
+		private readonly IMapper _mapper;
+		public CategoryController(ICategoryRepository categoryRepository, IMapper mapper)
 		{
 			_categoryRepository = categoryRepository;
+			_mapper = mapper;
 		}
 
 		//Get all categories
@@ -62,6 +65,40 @@ namespace PokemonApp.Controllers
 				return BadRequest(ModelState);
 
 			return Ok(pokemons);
+		}
+
+		// Save the category
+		[HttpPost]
+		[ProducesResponseType(204)]
+		[ProducesResponseType(400)]
+		public IActionResult CreateCategory([FromBody] CategoryDto categoryCreate)
+		{
+			
+			if (categoryCreate == null)
+				return BadRequest(ModelState);
+
+			var category = _categoryRepository.GetCategories()
+				.Where(c => c.Name.Trim().ToUpper() == categoryCreate.Name.Trim().ToUpper())
+				.FirstOrDefault();
+
+			if(category != null)
+			{
+				ModelState.AddModelError("", "Category allrady exists");
+				return StatusCode(422, ModelState);
+			}
+
+			if (!ModelState.IsValid)
+				return BadRequest();
+
+			var categoryMap = _mapper.Map<Category>(categoryCreate);
+
+			if (!_categoryRepository.CreateCategory(categoryMap)){
+				ModelState.AddModelError("", "Something went rong on save data");
+				return StatusCode(500, ModelState);
+			}
+
+			return Ok("succefly saved category");
+
 		}
 	}
 }
