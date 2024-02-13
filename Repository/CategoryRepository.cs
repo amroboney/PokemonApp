@@ -1,4 +1,5 @@
 ﻿using System;
+using Azure.Core;
 using PokemonApp.Data;
 using PokemonApp.Interfaces;
 using PokemonApp.Models;
@@ -22,6 +23,13 @@ namespace PokemonApp.Repository
         public bool CreateCategory(Category category)
         {
             _context.Add(category);
+            return Save();
+        }
+
+        public bool DeleteCategory(Category category)
+        {
+
+            _context.Remove(category);
             return Save();
         }
 
