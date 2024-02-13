@@ -15,7 +15,10 @@ namespace PokemonApp.Interfaces
 
 		bool OwnerExists(int id);
 
-		bool createOwner(Owner owner);
+		bool CreateOwner(Owner owner);
+
+		bool UpdateOwner(Owner owner);
+
 
 		bool Save();
 	}

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using PokemonApp.Data;
 using PokemonApp.Interfaces;
 using PokemonApp.Models;
@@ -48,6 +49,12 @@ namespace PokemonApp.Repository
         {
             var IsSave = _context.SaveChanges();
             return IsSave > 0 ? true : false;
+        }
+
+        public bool UpdateCountry(Country country)
+        {
+            _context.Update(country);
+            return Save();
         }
     }
 }

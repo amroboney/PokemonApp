@@ -15,7 +15,7 @@ namespace PokemonApp.Repository
             _context = context;
 		}
 
-        public bool createOwner(Owner owner)
+        public bool CreateOwner(Owner owner)
         {
             _context.Add(owner);
             return Save();
@@ -51,6 +51,12 @@ namespace PokemonApp.Repository
         {
             var IsSave = _context.SaveChanges();
             return IsSave > 0 ? true : false;
+        }
+
+        public bool UpdateOwner(Owner owner)
+        {
+            _context.Update(owner);
+            return Save();
         }
     }
 }

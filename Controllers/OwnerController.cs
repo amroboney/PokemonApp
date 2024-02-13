@@ -116,13 +116,43 @@ namespace PokemonApp.Controllers
 
             ownerMap.Country = _countryRepository.GetCountry(countryId);
 
-            if (!_ownerRepository.createOwner(ownerMap))
+            if (!_ownerRepository.CreateOwner(ownerMap))
             {
                 ModelState.AddModelError("", "somthing went rong on save country");
                 return StatusCode(500, ModelState);
             }
 
             return Ok("successflu saved Owners");
+        }
+
+        // update owner
+        [HttpPut("{ownerId}")]
+        [ProducesResponseType(500)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult updateOwner(int ownerId, [FromBody] OwnerDto updateOwner)
+        {
+            if (updateOwner == null)
+                return BadRequest(ModelState);
+
+            if (ownerId != updateOwner.Id)
+                return BadRequest(ModelState);
+
+            if (!_ownerRepository.OwnerExists(ownerId))
+                return NotFound();
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var ownerMap = _mapper.Map<Owner>(updateOwner);
+
+            if (!_ownerRepository.UpdateOwner(ownerMap))
+            {
+                ModelState.AddModelError("", "somthing went when save data");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
         }
     }
 }

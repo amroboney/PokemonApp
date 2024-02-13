@@ -2,9 +2,11 @@
 using System.Diagnostics.Metrics;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using PokemonApp.Data.Dto;
 using PokemonApp.Interfaces;
 using PokemonApp.Models;
+using PokemonApp.Repository;
 
 namespace PokemonApp.Controllers
 {
@@ -101,7 +103,38 @@ namespace PokemonApp.Controllers
 
 			return Ok("successflu saved country");
 		}
-		
+
+
+        // update country
+        [HttpPut("{countryId}")]
+        [ProducesResponseType(500)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult updateCountry(int countryId, [FromBody] CountryDto updateCountry)
+        {
+            if (updateCountry == null)
+                return BadRequest(ModelState);
+
+            if (countryId != updateCountry.Id)
+                return BadRequest(ModelState);
+
+            if (!_countryRepository.CountryExists(countryId))
+                return NotFound();
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var countryMap = _mapper.Map<Country>(updateCountry);
+
+            if (!_countryRepository.UpdateCountry(countryMap))
+            {
+                ModelState.AddModelError("", "somthing went when save data");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
+        }
+
 
     }
 }
