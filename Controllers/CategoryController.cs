@@ -131,7 +131,7 @@ namespace PokemonApp.Controllers
 			return NoContent() ;
 		}
 
-
+		// Delete category
 		[HttpDelete("{categoryId}")]
 		[ProducesResponseType(400)]
 		[ProducesResponseType(402)]
